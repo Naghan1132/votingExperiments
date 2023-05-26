@@ -1,6 +1,3 @@
-set.seed(2023)
-
-
 # === Clustering ===
 # ACM
 # CAH
@@ -14,7 +11,7 @@ set.seed(2023)
 #' @import votingMethods
 #' @param n_simulations number of simulations
 #' @returns matrix
-experiments <- function(n_simulations = 10) {
+experiments <- function(n_simulations = 2) {
   #namesM <- c("Uninominal 1 round","Uninominal 2 round","Succesif elimination","Bucklin","Borda","Nanson","Minimax","Copeland","Range Voting","Majority Jugement","Approval")
   methods_names <- c("successif_elimination","bucklin","borda","nanson","minimax","copeland","range_voting","approval")
   simu_types <- c("generate_beta","generate_unif_continu","generate_norm") # generate_beta,generate_unif_continu,generate_norm
@@ -33,44 +30,38 @@ experiments <- function(n_simulations = 10) {
     # Boucle pour parcourir les fonctions
     for (type in simu_types) {
       simulation <- get(type)
-      #situation <- simulation(max(n_voters),max(n_candidates)) # on génére le max puis on prends des samples
-      # on récréer les samples à chaque nouveau type :
-      # Échantillon aléatoire de lignes et de colonnes
-      #sample <- c()
-      # faire en sorte que les votants/candidats déjà pris en compte le soit encore
-      #lignes_echantillon <- sample(, n_lignes)
-      #colonnes_echantillon <- sample(ncol(matrice), n_colonnes)
-      #situation <- situation[lignes_echantillon,colonnes_echantillon]
+      # génère la situation maximale
+      situation <- simulation(max(n_voters),max(n_candidates)) # on génére le max puis on prends des samples
 
-      #créer une liste d'échantillons pour chaque cas !!!
-      # créer n_voters*n_candidates situation (sample)
-      # for(voter in n_voters){
-      #   for(candidate in n_candidates){
-      #
-      #   }
-      # }
+      # =======
 
-      # =====
-
+      first_n_voter <- n_voters[1]
+      first_n_candidate <- n_candidates[1]
+      echantillon1_voter <- sample(ncol(situation), first_n_voter, replace = FALSE) # init
+      echantillon1_candidate <- sample(nrow(situation),first_n_candidate, replace = FALSE) # init
       for(voter in n_voters){
+        colonnes_supplementaires <- sample(setdiff(1:ncol(situation), echantillon1_voter),voter-length(echantillon1_voter), replace = FALSE)
+        echantillon_final_voter <- c(echantillon1_voter,colonnes_supplementaires)
         for(candidate in n_candidates){
+          lignes_supplementaires <- sample(setdiff(1:nrow(situation), echantillon1_candidate),candidate-length(echantillon1_candidate), replace = FALSE)
+          echantillon_final_candidate <- c(echantillon1_candidate, lignes_supplementaires)
           winners <- c()
-          # TEST => on tire un nouveau score à chaque fois
-          situation <- simulation(voter,candidate)
+          #situation <- simulation(voter,candidate) # Mettre pour LES tests
           for(method in methods_names){
             scrutin <- get(method)
-            winner <- scrutin(situation) # OK
-            winners <- c(winners,winner) # on ajoute le gagnant de la méthode
+            # faire exception pour uninominale 2T !!!
+            winner <- scrutin(situation[echantillon_final_candidate,echantillon_final_voter]) # test
+            winners <- c(winners,winner) # on ajoute le gagnant de chaque méthodes
           }
           nouvelle_ligne <- c(n, voter, candidate, type, winners)
-          df[cpt,] <- nouvelle_ligne # OU df <- rbind(df, nouvelle_ligne)
+          df[cpt,] <- nouvelle_ligne # OU df <- rbind(df, nouvelle_ligne) (rbind enlève les colonnes, pas ouf)
           cpt <- cpt +1
         }
       }
     }
   }
   View(df)
-  return(NULL)
+  return(data.frame(df))
 }
 
 
