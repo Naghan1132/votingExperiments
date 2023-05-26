@@ -10,8 +10,8 @@
 #' @import voteSim
 #' @import votingMethods
 #' @param n_simulations number of simulations
-#' @returns matrix
-experiments <- function(n_simulations = 2) {
+#' @returns dataframe
+experiments <- function(n_simulations = 5) {
   #namesM <- c("Uninominal 1 round","Uninominal 2 round","Succesif elimination","Bucklin","Borda","Nanson","Minimax","Copeland","Range Voting","Majority Jugement","Approval")
   methods_names <- c("successif_elimination","bucklin","borda","nanson","minimax","copeland","range_voting","approval")
   simu_types <- c("generate_beta","generate_unif_continu","generate_norm") # generate_beta,generate_unif_continu,generate_norm
@@ -61,7 +61,9 @@ experiments <- function(n_simulations = 2) {
     }
   }
   View(df)
-  return(data.frame(df))
+  df <- data.frame(df)
+  export_experiments_to_excel(df)
+  return(df)
 }
 
 
