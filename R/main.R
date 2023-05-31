@@ -18,8 +18,6 @@ experiments <- function(n_simulations = 10) {
   simu_types <- c("generate_beta","generate_unif_continu","generate_norm")
   n_candidates <- c(3,4,5,7,9,14) # OK
   n_voters <- c(9,15,21,51,101,1001,10001) # OK
-  #n_candidates <- c(3,5) #test
-  #n_voters <- c(7,9) #test
 
   # Créer un data frame vide avec des colonnes renommées
   col_names <- c("Simu", "nVoters", "nCandidates","typeSimu")
