@@ -1,7 +1,8 @@
-# === Clustering ===
-# ACM
-# CAH
-# MDS
+# USE :
+#   library(devtools)
+#   install_github("Naghan1132/votingExperiments")
+#   library(votingExperiments)
+#   experiments()
 
 # créer un tableau fixe, faire varier les candidats (nb impairs de pref) etc...
 
@@ -11,14 +12,14 @@
 #' @import votingMethods
 #' @param n_simulations number of simulations
 #' @returns dataframe
-experiments <- function(n_simulations = 1) {
+experiments <- function(n_simulations = 10) {
   start_time <- Sys.time()
   methods_names <- c("uninominal1T","uninominal2T","successif_elimination","bucklin","borda","nanson","minimax","copeland","condorcet","range_voting","approval","majority_jugement")
   simu_types <- c("generate_beta","generate_unif_continu","generate_norm")
-  #n_candidates <- c(3,4,5,7,9,14) # OK
-  #n_voters <- c(9,15,21,51,101,1001,10001) # OK
-  n_candidates <- c(3,5) #test
-  n_voters <- c(7,9) #test
+  n_candidates <- c(3,4,5,7,9,14) # OK
+  n_voters <- c(9,15,21,51,101,1001,10001) # OK
+  #n_candidates <- c(3,5) #test
+  #n_voters <- c(7,9) #test
 
   # Créer un data frame vide avec des colonnes renommées
   col_names <- c("Simu", "nVoters", "nCandidates","typeSimu")
@@ -84,7 +85,7 @@ experiments <- function(n_simulations = 1) {
   end_time <- Sys.time() - start_time
   print("execution time : ")
   print(end_time)
-  #export_experiments_to_excel(df)
+  # export_experiments_to_excel(df)
   return(df)
 }
 
@@ -97,13 +98,6 @@ experiments <- function(n_simulations = 1) {
 export_experiments_to_excel <- function(df){
   writexl::write_xlsx(df,"experiments.xlsx")
 }
-
-# rajouter :
-# jugement marjotaire
-# vote uni 1 et 2
-# condorcet winner
-# copeland => vainqueur de Condorcet (automatiquement), retourner son nom si il y en a un
-# permets de ne pas recalucler la matrice plusieurs fois => gains de temps
 
 
 # faire tourner ça sur plusieurs de la fac, et concaténer les résultats dans un seul excel.
