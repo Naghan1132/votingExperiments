@@ -4,7 +4,7 @@
 \alias{experiments}
 \title{experiments function}
 \usage{
-experiments(n_simulations = 1)
+experiments(n_simulations = 10)
 }
 \arguments{
 \item{n_simulations}{number of simulations}
