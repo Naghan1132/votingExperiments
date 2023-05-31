@@ -4,13 +4,13 @@
 \alias{experiments}
 \title{experiments function}
 \usage{
-experiments(n_simulations = 2)
+experiments(n_simulations = 1)
 }
 \arguments{
 \item{n_simulations}{number of simulations}
 }
 \value{
-matrix
+dataframe
 }
 \description{
 experiments function

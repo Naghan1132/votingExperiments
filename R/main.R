@@ -3,7 +3,7 @@
 # CAH
 # MDS
 
-#créer un tableau fixe, faire varier les candidats (nb impairs de pref) etc...
+# créer un tableau fixe, faire varier les candidats (nb impairs de pref) etc...
 
 #' experiments function
 #' @export
@@ -11,10 +11,10 @@
 #' @import votingMethods
 #' @param n_simulations number of simulations
 #' @returns dataframe
-experiments <- function(n_simulations = 5) {
-  #namesM <- c("Uninominal 1 round","Uninominal 2 round","Succesif elimination","Bucklin","Borda","Nanson","Minimax","Copeland","Range Voting","Majority Jugement","Approval")
-  methods_names <- c("successif_elimination","bucklin","borda","nanson","minimax","copeland","range_voting","approval")
-  simu_types <- c("generate_beta","generate_unif_continu","generate_norm") # generate_beta,generate_unif_continu,generate_norm
+experiments <- function(n_simulations = 1) {
+  start_time <- Sys.time()
+  methods_names <- c("uninominal1T","uninominal2T","successif_elimination","bucklin","borda","nanson","minimax","copeland","condorcet","range_voting","approval","majority_jugement")
+  simu_types <- c("generate_beta","generate_unif_continu","generate_norm")
   #n_candidates <- c(3,4,5,7,9,14) # OK
   #n_voters <- c(9,15,21,51,101,1001,10001) # OK
   n_candidates <- c(3,5) #test
@@ -45,12 +45,31 @@ experiments <- function(n_simulations = 5) {
         for(candidate in n_candidates){
           lignes_supplementaires <- sample(setdiff(1:nrow(situation), echantillon1_candidate),candidate-length(echantillon1_candidate), replace = FALSE)
           echantillon_final_candidate <- c(echantillon1_candidate, lignes_supplementaires)
+          condorcet <- "None"
           winners <- c()
-          #situation <- simulation(voter,candidate) # Mettre pour LES tests
+
+          # =======
+
           for(method in methods_names){
-            scrutin <- get(method)
-            # faire exception pour uninominale 2T !!!
-            winner <- scrutin(situation[echantillon_final_candidate,echantillon_final_voter]) # test
+            if(method == "uninominal1T"){
+              scrutin <- get("uninominal")
+              winner <- scrutin(situation[echantillon_final_candidate,echantillon_final_voter])
+            }else if(method == "uninominal2T"){
+              scrutin <- get("uninominal")
+              winner <- scrutin(situation[echantillon_final_candidate,echantillon_final_voter],2)
+            }else if(method == "copeland"){
+              scrutin <- get("copeland")
+              winner <- scrutin(situation[echantillon_final_candidate,echantillon_final_voter])
+              condorcet <- winner$condorcet
+              winner <- winner$copeland
+              # ajouter colonne condorcet
+            }else if(method == "condorcet"){
+              winner <- condorcet
+            }
+            else{
+              scrutin <- get(method)
+              winner <- scrutin(situation[echantillon_final_candidate,echantillon_final_voter])
+            }
             winners <- c(winners,winner) # on ajoute le gagnant de chaque méthodes
           }
           nouvelle_ligne <- c(n, voter, candidate, type, winners)
@@ -62,7 +81,10 @@ experiments <- function(n_simulations = 5) {
   }
   View(df)
   df <- data.frame(df)
-  export_experiments_to_excel(df)
+  end_time <- Sys.time() - start_time
+  print("execution time : ")
+  print(end_time)
+  #export_experiments_to_excel(df)
   return(df)
 }
 
@@ -75,3 +97,19 @@ experiments <- function(n_simulations = 5) {
 export_experiments_to_excel <- function(df){
   writexl::write_xlsx(df,"experiments.xlsx")
 }
+
+# rajouter :
+# jugement marjotaire
+# vote uni 1 et 2
+# condorcet winner
+# copeland => vainqueur de Condorcet (automatiquement), retourner son nom si il y en a un
+# permets de ne pas recalucler la matrice plusieurs fois => gains de temps
+
+
+# faire tourner ça sur plusieurs de la fac, et concaténer les résultats dans un seul excel.
+
+# set.seed(2023) dans package voteSim() QUAND ON FAIT TOURNER LA SIMU FINALE
+
+# TODO :
+# optimiser majority jugement !
+
