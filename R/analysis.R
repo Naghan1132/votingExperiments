@@ -36,8 +36,6 @@ df$borda = factor(df$borda)
 df$nanson = factor(df$nanson)
 df$minimax = factor(df$minimax)
 df$copeland = factor(df$copeland)
-# Remplacer les None de Condorcet ???
-#df$condorcet[is.na(df$condorcet)] <- sample(names(freq_prop), sum(is.na(data_categ$codeqlt)), replace = TRUE, prob = freq_prop)
 df$condorcet = factor(df$condorcet)
 df$range_voting = factor(df$range_voting)
 df$approval = factor(df$approval)
@@ -50,8 +48,13 @@ summary(df)
 library(FactoMineR)
 
 # === ACM ===
-res.mca <- MCA(df)
 
+# echantillon <- df[sample(nrow(df), 100), ]
+# res.mca <- MCA(echantillon)
+# couleurs <- c("red", "blue", "green")[as.numeric(factor(df$typeSimu))]
+# plot(res.mca,col.ind = couleurs, habillage = "typeSimu", title = "Nuage d'individus (Échantillon)")
+
+res.mca <- MCA(df)
 eig.val <- res.mca$eig # nuage individus
 barplot(eig.val[, 2],
         names.arg = 1:nrow(eig.val),
@@ -86,6 +89,27 @@ ggplot(data = as.data.frame(similarity_matrix)) +
 # === CAH ===
 #res.hcpc = HCPC(res.mca)
 
+df$nVoters = NULL
+df$nCandidates = NULL
+df$typeSimu = NULL
 
+df$uninominal1T = as.numeric(factor(df$uninominal1T))
+df$uninominal2T = as.numeric(factor(df$uninominal2T))
+df$successif_elimination = as.numeric(factor(df$successif_elimination))
+df$bucklin = as.numeric(factor(df$bucklin))
+df$borda = as.numeric(factor(df$borda))
+df$nanson = as.numeric(factor(df$nanson))
+df$minimax = as.numeric(factor(df$minimax))
+df$copeland = as.numeric(factor(df$copeland))
+df$condorcet = as.numeric(factor(df$condorcet))
+df$range_voting = as.numeric(factor(df$range_voting))
+df$approval = as.numeric(factor(df$approval))
+df$majority_jugement = as.numeric(factor(df$majority_jugement))
+
+resultat_cah <- hclust(dist(t(df)))
+# Visualiser le dendrogramme résultant
+plot(resultat_cah, main = "Dendrogramme CAH")
+View(t(df))
+View(df)
 
 
