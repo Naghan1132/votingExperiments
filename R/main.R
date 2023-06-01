@@ -97,11 +97,10 @@ export_experiments_to_excel <- function(df){
   writexl::write_xlsx(df,"experiments.xlsx")
 }
 
+# 1261 lignes => 10 simu => 26 mins
 
 # faire tourner ça sur plusieurs de la fac, et concaténer les résultats dans un seul excel.
 
-# set.seed(2023) dans package voteSim() QUAND ON FAIT TOURNER LA SIMU FINALE
+# !!!! set.seed(2023) dans package voteSim() QUAND ON FAIT TOURNER LA SIMU FINALE !!!!
 
-# TODO :
-# optimiser majority jugement !
 
