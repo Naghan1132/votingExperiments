@@ -4,10 +4,12 @@
 \alias{export_experiments_to_excel}
 \title{Export experiments to excel}
 \usage{
-export_experiments_to_excel(df)
+export_experiments_to_excel(df, n_candidates)
 }
 \arguments{
 \item{df}{dataFrame}
+
+\item{n_candidates}{n_candidates}
 }
 \description{
 Export experiments to excel

@@ -17,7 +17,6 @@ experiments <- function(n_candidates, n_simulations = 10) {
   start_time <- Sys.time()
   methods_names <- c("uninominal1T","uninominal2T","successif_elimination","bucklin","borda","nanson","minimax","copeland","condorcet","range_voting","approval","majority_jugement")
   simu_types <- c("generate_beta","generate_unif_continu","generate_norm")
-  #n_candidates <- c(3,4,5,7,9,14) # OK
   n_voters <- c(9,15,21,51,101,1001,10001) # OK
 
   # Créer un data frame vide avec des colonnes renommées
@@ -73,7 +72,7 @@ experiments <- function(n_candidates, n_simulations = 10) {
   end_time <- Sys.time() - start_time
   print("execution time : ")
   print(end_time)
-  export_experiments_to_excel(df)
+  export_experiments_to_excel(df,n_candidates)
   return(df)
 }
 
@@ -82,8 +81,10 @@ experiments <- function(n_candidates, n_simulations = 10) {
 #' Export experiments to excel
 #' @export
 #' @import writexl
+#' @param n_candidates n_candidates
 #' @param df dataFrame
-export_experiments_to_excel <- function(df){
+export_experiments_to_excel <- function(df,n_candidates){
+  name <- paste0("experiments_",n_candidates,"_candidates.xlsx")
   writexl::write_xlsx(df,"experiments.xlsx")
 }
 
@@ -94,3 +95,12 @@ export_experiments_to_excel <- function(df){
 # !!!! set.seed(2023) dans package voteSim() QUAND ON FAIT TOURNER LA SIMU FINALE !!!!
 
 
+#candidates <- c(3,4,5,7,9,14) # OK
+
+# ==== Simulations ====:
+# n_candidates = 3, 10 simus OK -> 210 lignes -> 4.55 mins
+# n_candidates = 4, 10 simus OK ->
+# n_candidates = 5, 10 simus OK ->
+# n_candidates = 7, 10 simus OK ->
+# n_candidates = 9, 10 simus OK ->
+# n_candidates = 14, 10 simus OK ->
