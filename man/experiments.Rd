@@ -4,9 +4,11 @@
 \alias{experiments}
 \title{experiments function}
 \usage{
-experiments(n_simulations = 10)
+experiments(n_candidates, n_simulations = 10)
 }
 \arguments{
+\item{n_candidates}{nC}
+
 \item{n_simulations}{number of simulations}
 }
 \value{
