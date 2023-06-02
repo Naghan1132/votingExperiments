@@ -85,7 +85,7 @@ experiments <- function(n_candidates, n_simulations = 10) {
 #' @param df dataFrame
 export_experiments_to_excel <- function(df,n_candidates){
   name <- paste0("experiments_",n_candidates,"_candidates.xlsx")
-  writexl::write_xlsx(df,"experiments.xlsx")
+  writexl::write_xlsx(df,name)
 }
 
 # 1261 lignes => 10 simu => 26 mins
@@ -97,10 +97,10 @@ export_experiments_to_excel <- function(df,n_candidates){
 
 #candidates <- c(3,4,5,7,9,14) # OK
 
-# ==== Simulations ====:
-# n_candidates = 3, 10 simus OK -> 210 lignes -> 4.55 mins
-# n_candidates = 4, 10 simus OK ->
-# n_candidates = 5, 10 simus OK ->
-# n_candidates = 7, 10 simus OK ->
-# n_candidates = 9, 10 simus OK ->
-# n_candidates = 14, 10 simus OK ->
+# ==== Simulations sur PC fac ==== : (faire plutôt 2100 lignes ? Donc 100 n_simus ?)
+# n_candidates = 3, n_simus = 10 -> 210 lignes -> 4.55 mins (4.1 mins sur pc perso ^^)
+# n_candidates = 4, n_simus = 10 -> 210 lignes -> 4.86 mins
+# n_candidates = 5, n_simus = 10 -> 210 lignes -> 5.30 mins
+# n_candidates = 7, n_simus = 10 ->
+# n_candidates = 9, n_simus = 10 ->
+# n_candidates = 14, n_simus = 10 -> 210 lignes -> 6.89 mins
