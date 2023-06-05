@@ -7,7 +7,7 @@
 experiments(n_candidates, n_simulations = 10)
 }
 \arguments{
-\item{n_candidates}{nC}
+\item{n_candidates}{n_candidates}
 
 \item{n_simulations}{number of simulations}
 }

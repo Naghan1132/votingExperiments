@@ -2,6 +2,7 @@
 
 export(experiments)
 export(export_experiments_to_excel)
+export(similarity)
 import(voteSim)
 import(votingMethods)
 import(writexl)
