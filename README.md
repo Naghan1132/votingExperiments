@@ -2,7 +2,7 @@
 
 ![Simulations](https://i.imgur.com/VYdsKqB.png)
 
-## CAH
+## Dissimilarity Matrix
 ![Simulations](https://i.imgur.com/WKTF1xb.png)
 
 ## Proximity graph
