@@ -1,23 +1,24 @@
-create_similarity_matrix <- function(methods_names){
+create_dissimilarity_matrix <- function(methods_names){
   # Calcule la matrice :
-  similarity_matrix <- matrix(0, length(methods_names),length(methods_names))
-  colnames(similarity_matrix) <- methods_names
-  rownames(similarity_matrix) <- methods_names
-  return(similarity_matrix)
+  dissimilarity_matrix <- matrix(0, length(methods_names),length(methods_names))
+  colnames(dissimilarity_matrix) <- methods_names
+  rownames(dissimilarity_matrix) <- methods_names
+  return(dissimilarity_matrix)
 }
 
-calculate_similarity <- function(winners,methods_names){
-  similarity_matrix <- create_similarity_matrix(methods_names)
+calculate_dissimilarity <- function(winners,methods_names){
+  dissimilarity_matrix <- create_dissimilarity_matrix(methods_names)
   for (i in 1:(length(methods_names) - 1)){
     for (j in (i + 1):(length(methods_names))){
-      if (winners[i] == winners[j]) {
-        similarity_matrix[i, j] <- 1
-        similarity_matrix[j, i] <- 1
+      if (winners[i] != winners[j]) {
+        # si différent alors...
+        dissimilarity_matrix[i, j] <- 1
+        dissimilarity_matrix[j, i] <- 1
       }
     }
   }
-  diag(similarity_matrix) <- 1
-  return(similarity_matrix)
+  diag(dissimilarity_matrix) <- 0
+  return(dissimilarity_matrix)
 }
 
 

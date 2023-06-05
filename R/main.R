@@ -76,29 +76,29 @@ experiments <- function(n_candidates, n_simulations = 10) {
 
 
 
-#' similarity_matrix function
+#' dissimilarity function
 #' @export
 #' @import voteSim
 #' @import votingMethods
 #' @param n_simulations number of simulations
 #' @returns similarity_matrix
-similarity <- function(n_simulations = 4){
+dissimilarity <- function(n_simulations = 4){
   start_time <- Sys.time()
   methods_names <- c("uninominal1T","uninominal2T","successif_elimination","bucklin","borda","nanson","minimax","copeland","condorcet","range_voting","approval","majority_jugement")
   simu_types <- c("generate_beta","generate_unif_continu","generate_norm")
   n_voters <- c(9,15,21,51,101,1001,10001) # OK
   n_candidates <- c(3,4,5,7,9,14) # OK
   # =====
-  similarity_matrix <- create_similarity_matrix(methods_names) # initialisation
+  dissimilarity_matrix <- create_dissimilarity_matrix(methods_names) # Initialisation
   # =====
   for(n in 1:n_simulations){
     for (type in simu_types) {
       simulation <- get(type)
       situation <- simulation(max(n_voters),max(n_candidates)) # on génére le max puis on prends des samples
       for(voter in n_voters){
-        echantillon_voter <- sample(ncol(situation), voter, replace = FALSE) # init
+        echantillon_voter <- sample(ncol(situation), voter, replace = FALSE)
         for(candidate in n_candidates){
-          echantillon_candidate <- sample(nrow(situation),candidate, replace = FALSE) # init
+          echantillon_candidate <- sample(nrow(situation),candidate, replace = FALSE)
           condorcet <- "None"
           winners <- c()
           for(method in methods_names){
@@ -122,8 +122,10 @@ similarity <- function(n_simulations = 4){
             }
             winners <- c(winners,winner)
           }
-          similarity_matrix_one_case <- calculate_similarity(winners,methods_names)
-          similarity_matrix <- similarity_matrix + similarity_matrix_one_case
+          # On a finit de calculer le gagnants de chaque méthodes
+          # on calcule alors la 'dissimilarité' entre chaque méthodes
+          dissimilarity_matrix_one_case <- calculate_dissimilarity(winners,methods_names)
+          dissimilarity_matrix <- dissimilarity_matrix + dissimilarity_matrix_one_case
         }
       }
     }
@@ -131,14 +133,9 @@ similarity <- function(n_simulations = 4){
   end_time <- Sys.time() - start_time
   print("execution time : ")
   print(end_time)
-  save(similarity_matrix,file = "similarity_matrix")
-  View(similarity_matrix)
-  # cah <- hclust(as.dist(similarity_matrix))
-  # # Affichage du dendrogramme
-  # plot(cah)
-
-  # cmdscale(similarity_matrix,k=2)
-  return(similarity_matrix)
+  save(dissimilarity_matrix,file = "dissimilarity_matrix.RData")
+  View(dissimilarity_matrix)
+  return(dissimilarity_matrix)
 }
 
 
