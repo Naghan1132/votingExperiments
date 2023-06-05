@@ -17,7 +17,7 @@ calculate_dissimilarity <- function(winners,methods_names){
       }
     }
   }
-  diag(dissimilarity_matrix) <- 0
+  diag(dissimilarity_matrix) <- 0 # a enlever ?
   return(dissimilarity_matrix)
 }
 
