@@ -88,6 +88,9 @@ export_experiments_to_excel <- function(df,n_candidates){
   writexl::write_xlsx(df,name)
 }
 
+
+
+
 # 1261 lignes => 10 simu => 26 mins
 
 # faire tourner ça sur plusieurs de la fac, et concaténer les résultats dans un seul excel.
