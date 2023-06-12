@@ -2,7 +2,7 @@
 #   library(devtools)
 #   install_github("Naghan1132/votingExperiments")
 #   library(votingExperiments)
-#   experiments()
+#   experiments(14)
 
 # créer un tableau fixe, faire varier les candidats (nb impairs de pref) etc...
 

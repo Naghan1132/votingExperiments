@@ -18,13 +18,3 @@ calculate_dissimilarity <- function(winners,methods_names){
   }
   return(dissimilarity_matrix)
 }
-
-
-
-
-
-# MDS sur la dernière matrice de similarité
-
-
-
-
