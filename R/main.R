@@ -106,6 +106,8 @@ dissimilarity <- function(n_v,n_c,simu_type,n_simulations){
   # =====
   for(n in 1:n_simulations){
     simulation <- get(simu_type)
+    # for (v in n_v)
+    #  for (c in n_c) ...
     situation <- simulation(n_v,n_c)
     condorcet <- "None"
     winners <- c()
@@ -160,6 +162,7 @@ all_cases <- function(n_simulations){
   simu_types <- c("generate_beta","generate_unif_continu","generate_norm")
   n_voters <- c(9,15,21,51,101,1001,10001) # OK
   n_candidates <- c(3,4,5,7,9,14) # OK
+
   # ==== Boucle de simulations ====
   for(type in simu_types){
     for (v in n_voters) {
@@ -169,7 +172,7 @@ all_cases <- function(n_simulations){
     }
   }
 
-  final_t <- start_t - Sys.time()
+  final_t <- Sys.time() - start_t
   print(final_t)
 }
 
