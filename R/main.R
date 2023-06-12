@@ -79,77 +79,6 @@ experiments <- function(n_candidates, n_simulations = 10) {
   return(df)
 }
 
-
-
-#' dissimilarity function
-#' @export
-#' @import voteSim
-#' @import votingMethods
-#' @param test_n_v for experiments
-#' @param n_simulations number of simulations
-#' @returns similarity_matrix
-dissimilarity <- function(test_n_v,n_simulations = 10){
-  start_time <- Sys.time()
-  n_lines <- 0
-  methods_names <- c("uninominal1T","uninominal2T","successif_elimination","bucklin","borda","nanson","minimax","copeland","condorcet","range_voting","approval","JM")
-  #simu_types <- c("generate_beta")
-  simu_types <- c("generate_unif_continu")
-  #simu_types <- c("generate_norm")
-  #n_voters <- c(9,15,21,51,101,1001,10001) # OK
-  n_voters <- c(test_n_v)
-  n_candidates <- c(3,4,5,7,9,14) # OK
-  # =====
-  dissimilarity_matrix <- create_dissimilarity_matrix(methods_names) # Initialisation
-  # =====
-  for(n in 1:n_simulations){
-    for (type in simu_types) {
-      simulation <- get(type)
-      for(voter in n_voters){
-        for(candidate in n_candidates){
-          situation <- simulation(voter,candidate)
-          n_lines <- n_lines + 1
-          condorcet <- "None"
-          winners <- c()
-          for(method in methods_names){
-            if(method == "uninominal1T"){
-              scrutin <- get("uninominal")
-              winner <- scrutin(situation)
-            }else if(method == "uninominal2T"){
-              scrutin <- get("uninominal")
-              winner <- scrutin(situation,2)
-            }else if(method == "copeland"){
-              scrutin <- get("copeland")
-              winner <- scrutin(situation)
-              condorcet <- winner$condorcet
-              winner <- winner$copeland
-            }else if(method == "condorcet"){
-              winner <- condorcet
-            }
-            else{
-              scrutin <- get(method)
-              winner <- scrutin(situation)
-            }
-            winners <- c(winners,winner)
-          }
-          # On a finit de calculer le gagnants de chaque méthodes
-          # on calcule alors la 'dissimilarité' entre chaque méthodes
-          dissimilarity_matrix_one_case <- calculate_dissimilarity(winners,methods_names)
-          dissimilarity_matrix <- dissimilarity_matrix + dissimilarity_matrix_one_case
-        }
-      }
-    }
-  }
-  end_time <- Sys.time() - start_time
-  print("execution time : ")
-  print(end_time)
-  print(n_lines)
-  save(dissimilarity_matrix,file = "dissimilarity_matrix.RData")
-  View(dissimilarity_matrix)
-  return(dissimilarity_matrix)
-}
-
-
-
 #' Export experiments to excel
 #' @export
 #' @import writexl
@@ -162,16 +91,89 @@ export_experiments_to_excel <- function(df,n_candidates){
 
 
 
+#' dissimilarity function
+#' @export
+#' @import voteSim
+#' @import votingMethods
+#' @param n_v n voters
+#' @param n_c n candidates
+#' @param simu_type simu_type
+#' @param n_simulations number of simulations
+dissimilarity <- function(n_v,n_c,simu_type,n_simulations){
+  methods_names <- c("uninominal1T","uninominal2T","successif_elimination","bucklin","borda","nanson","minimax","copeland","condorcet","range_voting","approval","JM")
+  # =====
+  dissimilarity_matrix <- create_dissimilarity_matrix(methods_names) # Initialisation
+  # =====
+  for(n in 1:n_simulations){
+    simulation <- get(simu_type)
+    situation <- simulation(n_v,n_c)
+    condorcet <- "None"
+    winners <- c()
+    for(method in methods_names){
+      if(method == "uninominal1T"){
+        scrutin <- get("uninominal")
+        winner <- scrutin(situation)
+      }else if(method == "uninominal2T"){
+        scrutin <- get("uninominal")
+        winner <- scrutin(situation,2)
+      }else if(method == "copeland"){
+        scrutin <- get("copeland")
+        winner <- scrutin(situation)
+        condorcet <- winner$condorcet
+        winner <- winner$copeland
+      }else if(method == "condorcet"){
+        winner <- condorcet
+      }
+      else{
+        scrutin <- get(method)
+        winner <- scrutin(situation)
+      }
+      winners <- c(winners,winner)
+    }
+    # On a finit de calculer le gagnants de chaque méthodes
+    # on calcule alors la 'dissimilarité' entre chaque méthodes
+    dissimilarity_matrix_one_case <- calculate_dissimilarity(winners,methods_names)
+    # on ajoute le résultat de la ligne à la matrice globale
+    dissimilarity_matrix <- dissimilarity_matrix + dissimilarity_matrix_one_case
+  }
+  if(simu_type == "generate_beta"){
+    type = "beta"
+  }else if(simu_type == "generate_unif_continu"){
+    type = "unif"
+  }else if(simu_type == "generate_norm"){
+    type = "norm"
+  }
+  #name <- paste0("experiments_output_data/all_cases/",type,"/",n_v,"_voters_",n_c,"_candidates_",n_simulations,"_simus.RData")
+  # pour pc fac =>
+  name <- paste0("stage/",type,"/",n_v,"_voters_",n_c,"_candidates_",n_simulations,"_simus.RData")
+  save(dissimilarity_matrix,file = name)
+}
+
+
+#' all cases function
+#' @export
+#' @import voteSim
+#' @import votingMethods
+#' @param n_simulations number of simulations
+all_cases <- function(n_simulations){
+  start_t <- Sys.time()
+  simu_types <- c("generate_beta","generate_unif_continu","generate_norm")
+  n_voters <- c(9,15,21,51,101,1001,10001) # OK
+  n_candidates <- c(3,4,5,7,9,14) # OK
+  # ==== Boucle de simulations ====
+  for(type in simu_types){
+    for (v in n_voters) {
+      for (c in n_candidates) {
+        dissimilarity(v,c,type,n_simulations)
+      }
+    }
+  }
+
+  final_t <- start_t - Sys.time()
+  print(final_t)
+}
+
 
 # 1261 lignes => 10 simu => 26 mins
 # faire tourner ça sur plusieurs de la fac, et concaténer les résultats dans un seul excel.
 # !!!! set.seed(2023) dans package voteSim() QUAND ON FAIT TOURNER LA SIMU FINALE !!!!
-
-
-# ==== Simulations sur PC fac ==== : (faire plutôt 2100 lignes ? Donc 100 n_simus ?)
-# n_candidates = 3, n_simus = 10 -> 210 lignes -> 4.55 mins (4.1 mins sur pc perso ^^)
-# n_candidates = 4, n_simus = 10 -> 210 lignes -> 4.86 mins
-# n_candidates = 5, n_simus = 10 -> 210 lignes -> 5.30 mins
-# n_candidates = 7, n_simus = 10 ->
-# n_candidates = 9, n_simus = 10 ->
-# n_candidates = 14, n_simus = 10 -> 210 lignes -> 6.89 mins

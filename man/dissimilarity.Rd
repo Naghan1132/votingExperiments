@@ -4,15 +4,16 @@
 \alias{dissimilarity}
 \title{dissimilarity function}
 \usage{
-dissimilarity(test_n_v, n_simulations = 10)
+dissimilarity(n_v, n_c, simu_type, n_simulations)
 }
 \arguments{
-\item{test_n_v}{for experiments}
+\item{n_v}{n voters}
+
+\item{n_c}{n candidates}
+
+\item{simu_type}{simu_type}
 
 \item{n_simulations}{number of simulations}
-}
-\value{
-similarity_matrix
 }
 \description{
 dissimilarity function
