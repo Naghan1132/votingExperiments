@@ -41,7 +41,7 @@ experiments <- function(n_candidates, n_simulations = 10) {
       for(voter in n_voters){
         colonnes_supplementaires <- sample(setdiff(1:ncol(situation), echantillon1_voter),voter-length(echantillon1_voter), replace = FALSE)
         echantillon_final_voter <- c(echantillon1_voter,colonnes_supplementaires)
-        condorcet <- "None" # peut-être inutile
+        condorcet <- "None"
         winners <- c()
         for(method in methods_names){
           if(method == "uninominal1T"){
