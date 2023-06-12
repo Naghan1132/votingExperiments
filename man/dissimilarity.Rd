@@ -4,9 +4,11 @@
 \alias{dissimilarity}
 \title{dissimilarity function}
 \usage{
-dissimilarity(n_simulations = 4)
+dissimilarity(test_n_v, n_simulations = 10)
 }
 \arguments{
+\item{test_n_v}{for experiments}
+
 \item{n_simulations}{number of simulations}
 }
 \value{

@@ -168,8 +168,6 @@ export_experiments_to_excel <- function(df,n_candidates){
 # !!!! set.seed(2023) dans package voteSim() QUAND ON FAIT TOURNER LA SIMU FINALE !!!!
 
 
-#candidates <- c(3,4,5,7,9,14) # OK
-
 # ==== Simulations sur PC fac ==== : (faire plutôt 2100 lignes ? Donc 100 n_simus ?)
 # n_candidates = 3, n_simus = 10 -> 210 lignes -> 4.55 mins (4.1 mins sur pc perso ^^)
 # n_candidates = 4, n_simus = 10 -> 210 lignes -> 4.86 mins
