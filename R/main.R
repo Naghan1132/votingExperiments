@@ -6,6 +6,11 @@
 
 # créer un tableau fixe, faire varier les candidats (nb impairs de pref) etc...
 
+# FAIRE À CHAQUE FOIS => mettre à jour les packages :
+#remotes::install_github("Naghan1132/voteSim")
+#remotes::install_github("Naghan1132/votingMethods")
+
+
 #' experiments function
 #' @export
 #' @import voteSim
@@ -36,7 +41,7 @@ experiments <- function(n_candidates, n_simulations = 10) {
       for(voter in n_voters){
         colonnes_supplementaires <- sample(setdiff(1:ncol(situation), echantillon1_voter),voter-length(echantillon1_voter), replace = FALSE)
         echantillon_final_voter <- c(echantillon1_voter,colonnes_supplementaires)
-        condorcet <- "None"
+        condorcet <- "None" # peut-être inutile
         winners <- c()
         for(method in methods_names){
           if(method == "uninominal1T"){
@@ -80,13 +85,18 @@ experiments <- function(n_candidates, n_simulations = 10) {
 #' @export
 #' @import voteSim
 #' @import votingMethods
+#' @param test_n_v for experiments
 #' @param n_simulations number of simulations
 #' @returns similarity_matrix
-dissimilarity <- function(n_simulations = 4){
+dissimilarity <- function(test_n_v,n_simulations = 10){
   start_time <- Sys.time()
-  methods_names <- c("uninominal1T","uninominal2T","successif_elimination","bucklin","borda","nanson","minimax","copeland","condorcet","range_voting","approval","majority_jugement")
-  simu_types <- c("generate_beta","generate_unif_continu","generate_norm")
-  n_voters <- c(9,15,21,51,101,1001,10001) # OK
+  n_lines <- 0
+  methods_names <- c("uninominal1T","uninominal2T","successif_elimination","bucklin","borda","nanson","minimax","copeland","condorcet","range_voting","approval","JM")
+  #simu_types <- c("generate_beta")
+  simu_types <- c("generate_unif_continu")
+  #simu_types <- c("generate_norm")
+  #n_voters <- c(9,15,21,51,101,1001,10001) # OK
+  n_voters <- c(test_n_v)
   n_candidates <- c(3,4,5,7,9,14) # OK
   # =====
   dissimilarity_matrix <- create_dissimilarity_matrix(methods_names) # Initialisation
@@ -94,23 +104,22 @@ dissimilarity <- function(n_simulations = 4){
   for(n in 1:n_simulations){
     for (type in simu_types) {
       simulation <- get(type)
-      situation <- simulation(max(n_voters),max(n_candidates)) # on génére le max puis on prends des samples
       for(voter in n_voters){
-        echantillon_voter <- sample(ncol(situation), voter, replace = FALSE)
         for(candidate in n_candidates){
-          echantillon_candidate <- sample(nrow(situation),candidate, replace = FALSE)
+          situation <- simulation(voter,candidate)
+          n_lines <- n_lines + 1
           condorcet <- "None"
           winners <- c()
           for(method in methods_names){
             if(method == "uninominal1T"){
               scrutin <- get("uninominal")
-              winner <- scrutin(situation[echantillon_candidate,echantillon_voter])
+              winner <- scrutin(situation)
             }else if(method == "uninominal2T"){
               scrutin <- get("uninominal")
-              winner <- scrutin(situation[echantillon_candidate,echantillon_voter],2)
+              winner <- scrutin(situation,2)
             }else if(method == "copeland"){
               scrutin <- get("copeland")
-              winner <- scrutin(situation[echantillon_candidate,echantillon_voter])
+              winner <- scrutin(situation)
               condorcet <- winner$condorcet
               winner <- winner$copeland
             }else if(method == "condorcet"){
@@ -118,7 +127,7 @@ dissimilarity <- function(n_simulations = 4){
             }
             else{
               scrutin <- get(method)
-              winner <- scrutin(situation[echantillon_candidate,echantillon_voter])
+              winner <- scrutin(situation)
             }
             winners <- c(winners,winner)
           }
@@ -133,6 +142,7 @@ dissimilarity <- function(n_simulations = 4){
   end_time <- Sys.time() - start_time
   print("execution time : ")
   print(end_time)
+  print(n_lines)
   save(dissimilarity_matrix,file = "dissimilarity_matrix.RData")
   View(dissimilarity_matrix)
   return(dissimilarity_matrix)
