@@ -176,6 +176,86 @@ all_cases <- function(n_simulations){
   print(final_t)
 }
 
+#' dissimilarity function beta unif
+#' @export
+#' @import voteSim
+#' @import votingMethods
+#' @param n_v n voters
+#' @param n_c n candidates
+#' @param alpha alpha
+#' @param beta beta
+#' @param n_simulations number of simulations
+dissimilarity_beta_unif <- function(n_v,n_c,alpha,beta,n_simulations){
+  methods_names <- c("uninominal1T","uninominal2T","successif_elimination","bucklin","borda","nanson","minimax","copeland","condorcet","range_voting","approval","JM")
+  # =====
+  dissimilarity_matrix <- create_dissimilarity_matrix(methods_names) # Initialisation
+  # =====
+  for(n in 1:n_simulations){
+    simulation <- get("generate_one_beta_two_unif_candidate")
+    situation <- simulation(n_v,n_c,alpha,beta)
+
+    condorcet <- "None"
+    winners <- c()
+    for(method in methods_names){
+      if(method == "uninominal1T"){
+        scrutin <- get("uninominal")
+        winner <- scrutin(situation)
+      }else if(method == "uninominal2T"){
+        scrutin <- get("uninominal")
+        winner <- scrutin(situation,2)
+      }else if(method == "copeland"){
+        scrutin <- get("copeland")
+        winner <- scrutin(situation)
+        condorcet <- winner$condorcet
+        winner <- winner$copeland
+      }else if(method == "condorcet"){
+        winner <- condorcet
+      }
+      else{
+        scrutin <- get(method)
+        winner <- scrutin(situation)
+      }
+      winners <- c(winners,winner)
+    }
+    # On a finit de calculer le gagnants de chaque méthodes
+    # on calcule alors la 'dissimilarité' entre chaque méthodes
+    dissimilarity_matrix_one_case <- calculate_dissimilarity(winners,methods_names)
+    # on ajoute le résultat de la ligne à la matrice globale
+    dissimilarity_matrix <- dissimilarity_matrix + dissimilarity_matrix_one_case
+  }
+  #chaine <- paste0(alpha,"_alpha_",beta,"_beta")
+  #chaine_modifiee <- gsub("\\.", "_", chaine)
+  #name <- paste0("experiments_output_data/beta_unif/",chaine_modifiee,"_",n_simulations,"_simus.RData")
+  name <- paste0("experiments_output_data/beta_unif/",alpha,"_alpha_",beta,"_beta_",n_simulations,"_simus.RData")
+
+  # pour pc fac =>
+  #name <- paste0("stage/",type,"/",n_v,"_voters_",n_c,"_candidates_",n_simulations,"_simus.RData")
+  save(dissimilarity_matrix,file = name)
+}
+
+
+#' evolving_alpha_beta
+#' @export
+#' @import voteSim
+#' @import votingMethods
+#' @param n_simulations number of simulations
+evolving_alpha_beta <- function(n_simulations){
+  start_t <- Sys.time()
+  n_voters <- c(15)
+  n_candidates <- c(3) # OK
+  alpha <- c(0.2,0.6,1,1.5,3,5)
+  beta <- c(0.1,0.3,0.6,0.9,1.5,3,5,8,10)
+
+  # ==== Boucle de simulations ====
+  for (a in alpha) {
+    for(b in beta){
+      dissimilarity_beta_unif(n_voters,n_candidates,a,b,n_simulations) # test on 15 voters
+    }
+  }
+
+  final_t <- Sys.time() - start_t
+  print(final_t)
+}
 
 # 1261 lignes => 10 simu => 26 mins
 # faire tourner ça sur plusieurs de la fac, et concaténer les résultats dans un seul excel.

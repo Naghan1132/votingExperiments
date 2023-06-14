@@ -2,6 +2,8 @@
 
 export(all_cases)
 export(dissimilarity)
+export(dissimilarity_beta_unif)
+export(evolving_alpha_beta)
 export(experiments)
 export(export_experiments_to_excel)
 import(voteSim)
