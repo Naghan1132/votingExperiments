@@ -243,8 +243,8 @@ evolving_alpha_beta <- function(n_simulations){
   start_t <- Sys.time()
   n_voters <- c(15)
   n_candidates <- c(3) # OK
-  alpha <- c(0.2,0.6,1,1.5,3,5)
-  beta <- c(0.1,0.3,0.6,0.9,1.5,3,5,8,10)
+  alpha <- c(0.2,0.6)
+  beta <- c(0.1,0.3)
 
   # ==== Boucle de simulations ====
   for (a in alpha) {
