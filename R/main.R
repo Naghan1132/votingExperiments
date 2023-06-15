@@ -226,10 +226,10 @@ dissimilarity_beta_unif <- function(n_v,n_c,alpha,beta,n_simulations){
   #chaine <- paste0(alpha,"_alpha_",beta,"_beta")
   #chaine_modifiee <- gsub("\\.", "_", chaine)
   #name <- paste0("experiments_output_data/beta_unif/",chaine_modifiee,"_",n_simulations,"_simus.RData")
-  name <- paste0("experiments_output_data/beta_unif/",alpha,"_alpha_",beta,"_beta_",n_simulations,"_simus.RData")
+  #name <- paste0("experiments_output_data/beta_unif/",alpha,"_alpha_",beta,"_beta_",n_simulations,"_simus.RData")
 
   # pour pc fac =>
-  #name <- paste0("stage/",type,"/",n_v,"_voters_",n_c,"_candidates_",n_simulations,"_simus.RData")
+  name <- paste0("stage/alpha_beta/",alpha,"_alpha_",beta,"_beta_",n_simulations,"_simus.RData")
   save(dissimilarity_matrix,file = name)
 }
 
