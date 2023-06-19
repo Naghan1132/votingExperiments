@@ -22,7 +22,7 @@ experiments <- function(n_candidates, n_simulations = 10) {
   start_time <- Sys.time()
   methods_names <- c("uninominal1T","uninominal2T","successif_elimination","bucklin","borda","nanson","minimax","copeland","condorcet","range_voting","approval","majority_jugement")
   simu_types <- c("generate_beta","generate_unif_continu","generate_norm")
-  n_voters <- c(9,15,21,51,101,1001,10001) # OK
+  n_voters <- c(9,15,21,51,101,1001) # OK
   # Créer un data frame vide avec des colonnes renommées
   col_names <- c("Simu", "nVoters", "nCandidates","typeSimu")
   col_names <- c(col_names,methods_names)
@@ -100,7 +100,7 @@ export_experiments_to_excel <- function(df,n_candidates){
 #' @param simu_type simu_type
 #' @param n_simulations number of simulations
 dissimilarity <- function(n_v,n_c,simu_type,n_simulations){
-  methods_names <- c("uninominal1T","uninominal2T","successif_elimination","bucklin","borda","nanson","minimax","copeland","condorcet","range_voting","approval","JM")
+  methods_names <- c("uninominal1T","uninominal2T","successif_elimination","bucklin","borda","nanson","minimax","copeland","condorcet","range_voting","approval","JM","infinity","star","anti_plularity")
   # =====
   dissimilarity_matrix <- create_dissimilarity_matrix(methods_names) # Initialisation
   # =====
@@ -145,22 +145,23 @@ dissimilarity <- function(n_v,n_c,simu_type,n_simulations){
   }else if(simu_type == "generate_norm"){
     type = "norm"
   }
-  #name <- paste0("experiments_output_data/all_cases/",type,"/",n_v,"_voters_",n_c,"_candidates_",n_simulations,"_simus.RData")
+  name <- paste0("experiments_output_data/nc_nv_evolving/",type,"/",n_v,"_voters_",n_c,"_candidates_",n_simulations,"_simus.RData")
   # pour pc fac =>
-  name <- paste0("stage/",type,"/",n_v,"_voters_",n_c,"_candidates_",n_simulations,"_simus.RData")
+  #name <- paste0("stage/",type,"/",n_v,"_voters_",n_c,"_candidates_",n_simulations,"_simus.RData")
   save(dissimilarity_matrix,file = name)
 }
 
 
-#' all cases function
+#' nc_nv_evolving function
 #' @export
 #' @import voteSim
 #' @import votingMethods
 #' @param n_simulations number of simulations
-all_cases <- function(n_simulations){
+nc_nv_evolving <- function(n_simulations){
   start_t <- Sys.time()
-  simu_types <- c("generate_beta","generate_unif_continu","generate_norm")
-  n_voters <- c(9,15,21,51,101,1001,10001) # OK
+  #simu_types <- c("generate_beta","generate_unif_continu","generate_norm")
+  simu_types <- c("generate_unif_continu")
+  n_voters <- c(9,15,21,51,101,1001) # OK
   n_candidates <- c(3,4,5,7,9,14) # OK
 
   # ==== Boucle de simulations ====
@@ -186,7 +187,7 @@ all_cases <- function(n_simulations){
 #' @param beta beta
 #' @param n_simulations number of simulations
 dissimilarity_beta_unif <- function(n_v,n_c,alpha,beta,n_simulations){
-  methods_names <- c("uninominal1T","uninominal2T","successif_elimination","bucklin","borda","nanson","minimax","copeland","condorcet","range_voting","approval","JM")
+  methods_names <- c("uninominal1T","uninominal2T","successif_elimination","bucklin","borda","nanson","minimax","copeland","condorcet","range_voting","approval","JM","infinity","star","anti_plularity")
   # =====
   dissimilarity_matrix <- create_dissimilarity_matrix(methods_names) # Initialisation
   # =====
@@ -223,13 +224,10 @@ dissimilarity_beta_unif <- function(n_v,n_c,alpha,beta,n_simulations){
     # on ajoute le résultat de la ligne à la matrice globale
     dissimilarity_matrix <- dissimilarity_matrix + dissimilarity_matrix_one_case
   }
-  #chaine <- paste0(alpha,"_alpha_",beta,"_beta")
-  #chaine_modifiee <- gsub("\\.", "_", chaine)
-  #name <- paste0("experiments_output_data/beta_unif/",chaine_modifiee,"_",n_simulations,"_simus.RData")
-  #name <- paste0("experiments_output_data/beta_unif/",alpha,"_alpha_",beta,"_beta_",n_simulations,"_simus.RData")
 
+  name <- paste0("experiments_output_data/alpha_beta_evolving/",alpha,"_alpha_",beta,"_beta_",n_simulations,"_simus.RData")
   # pour pc fac =>
-  name <- paste0("stage/alpha_beta/",alpha,"_alpha_",beta,"_beta_",n_simulations,"_simus.RData")
+  #name <- paste0("stage/alpha_beta/",alpha,"_alpha_",beta,"_beta_",n_simulations,"_simus.RData")
   save(dissimilarity_matrix,file = name)
 }
 
@@ -243,8 +241,8 @@ evolving_alpha_beta <- function(n_simulations){
   start_t <- Sys.time()
   n_voters <- c(15)
   n_candidates <- c(3) # OK
-  alpha <- c(0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85,0.9,0.95,1)
-  beta <- c(0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85,0.9,0.95,1)
+  alpha <- c(0.5,0.6,0.7,0.8,0.9,1)
+  beta <- c(0.5,0.6,0.7,0.8,0.9,1)
 
   # ==== Boucle de simulations ====
   for (a in alpha) {
