@@ -145,9 +145,9 @@ dissimilarity <- function(n_v,n_c,simu_type,n_simulations){
   }else if(simu_type == "generate_norm"){
     type = "norm"
   }
-  name <- paste0("experiments_output_data/nc_nv_evolving/",type,"/",n_v,"_voters_",n_c,"_candidates_",n_simulations,"_simus.RData")
+  #name <- paste0("experiments_output_data/nc_nv_evolving/",type,"/",n_v,"_voters_",n_c,"_candidates_",n_simulations,"_simus.RData")
   # pour pc fac =>
-  #name <- paste0("stage/",type,"/",n_v,"_voters_",n_c,"_candidates_",n_simulations,"_simus.RData")
+  name <- paste0("stage/",type,"/",n_v,"_voters_",n_c,"_candidates_",n_simulations,"_simus.RData")
   save(dissimilarity_matrix,file = name)
 }
 
