@@ -159,8 +159,8 @@ dissimilarity <- function(n_v,n_c,simu_type,n_simulations){
 #' @param n_simulations number of simulations
 nc_nv_evolving <- function(n_simulations){
   start_t <- Sys.time()
-  #simu_types <- c("generate_beta","generate_unif_continu","generate_norm")
-  simu_types <- c("generate_unif_continu")
+  simu_types <- c("generate_beta","generate_unif_continu","generate_norm")
+  #simu_types <- c("generate_unif_continu")
   n_voters <- c(9,15,21,51,101,1001) # OK
   n_candidates <- c(3,4,5,7,9,14) # OK
 
